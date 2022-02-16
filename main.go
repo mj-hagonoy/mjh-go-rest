@@ -29,12 +29,14 @@ func runRestService() {
 	router := mux.NewRouter()
 	router.HandleFunc("/", handlers.HomeHandler)
 
+	api1 := router.PathPrefix("/api/v1").Subrouter()
+
 	//Users
-	router.HandleFunc("/users", handlers.GetAllUsersHandler).Methods(http.MethodGet)
-	router.HandleFunc("/users/import", handlers.ImportUsersHandler).Methods(http.MethodPost)
+	api1.HandleFunc("/users", handlers.GetAllUsersHandler).Methods(http.MethodGet)
+	api1.HandleFunc("/users/import", handlers.ImportUsersHandler).Methods(http.MethodPost)
 
 	//Jobs
-	router.HandleFunc("/jobs/{id}", handlers.GetJob).Methods(http.MethodGet)
+	api1.HandleFunc("/jobs/{id}", handlers.GetJob).Methods(http.MethodGet)
 
 	http.Handle("/", router)
 
