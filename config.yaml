@@ -1,0 +1,16 @@
+port: 8080
+database: 
+  host: "0.0.0.0"
+  port: 27017
+  username: ""
+  password: ""
+  dbname: "codev"
+  sslmode: "disable"
+directory:
+  import_users: "<upload directory for csv files - import users>"
+  mail_templates: <email templates directory>"
+mail:
+  from: "...@gmail.com"
+  smtp_host: "smtp.gmail.com"
+  smtp_port: "587"
+  smtp_pwd: ""
