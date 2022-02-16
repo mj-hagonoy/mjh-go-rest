@@ -57,4 +57,6 @@ make local
 | /api/v1/users | GET | | (json) users | returns a list of users |
 | /api/v1/jobs/:id | GET | |(json) job info | returns information of the job indicated by `id` |
 
-
+## TODO
+- [ ] docker container
+- [ ] db initialization scripts
