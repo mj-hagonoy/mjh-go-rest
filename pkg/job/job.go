@@ -17,7 +17,6 @@ type Job struct {
 	Status      string `bson:"status" json:"status" validate:"required"`
 	InitiatedBy string `bson:"initiated_by" json:"initiated_by" validate:"required"`
 	SourceFile  string `bson:"source_file" json:"source_file" validate:"required"`
-	Remarks     string `bson:"remarks" json:"remarks"`
 	Created     string `bson:"created" json:"created"`
 	Modified    string `bson:"modified" json:"modified"`
 }
