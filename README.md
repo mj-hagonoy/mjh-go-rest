@@ -2,7 +2,7 @@
 
 ## Features, concepts: 
 - [ ] authentication
-- [x] CRUD + DB connectiong (mongodb)
+- [x] CRUD + DB connection (mongodb)
 - [x] HTTP routing (mux)
 - [x] logging
 - [x] CSV file upload 
@@ -28,7 +28,7 @@ database:
   port: 27017
   username: ""
   password: ""
-  dbname: "codev"
+  dbname: "<db_name>"
   sslmode: "disable"
 directory:
   import_users: "<upload directory for csv files - import users>"
