@@ -12,8 +12,9 @@ directory:
   mail_templates: <email templates directory>"
 mail:
   from: "...@gmail.com"
-  smtp_host: "smtp.gmail.com"
-  smtp_port: "587"
-  smtp_pwd: ""
+  smtp_host: "smtp.mailtrap.io"
+  smtp_port: "2525"
+  smtp_user : "282889e9032f1d"
+  smtp_pwd: "4266ee3ef4db6d"
 log:
   log_dir: "<log directory>"

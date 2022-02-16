@@ -26,7 +26,7 @@ type Mail struct {
 func (m *Mail) Send() error {
 	return smtp.SendMail(
 		fmt.Sprintf("%s:%s", config.GetConfig().Mail.SmtpHost, config.GetConfig().Mail.SmtpPort),
-		smtp.PlainAuth("", config.GetConfig().Mail.EmaiFrom, config.GetConfig().Mail.SmtpPwd, config.GetConfig().Mail.SmtpHost),
+		smtp.PlainAuth("", config.GetConfig().Mail.SmtpPass, config.GetConfig().Mail.SmtpPwd, config.GetConfig().Mail.SmtpHost),
 		config.GetConfig().Mail.EmaiFrom,
 		m.EmailTo,
 		[]byte(m.Msg),

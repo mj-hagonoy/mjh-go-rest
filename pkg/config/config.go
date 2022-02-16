@@ -23,6 +23,7 @@ type Config struct {
 		EmaiFrom string `yaml:"from"`
 		SmtpHost string `yaml:"smtp_host"`
 		SmtpPort string `yaml:"smtp_port"`
+		SmtpPass string `yaml:"smtp_user"`
 		SmtpPwd  string `yaml:"smtp_pwd"`
 	} `yaml:"mail"`
 	Log struct {
