@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"github.com/go-playground/validator"
+	"github.com/mj-hagonoy/mjh-go-rest/pkg/logger"
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/utils"
 )
 
@@ -87,18 +88,19 @@ func bulkUpload(ctx context.Context, wg *sync.WaitGroup, records [][]string) {
 	for _, record := range records {
 		user, e := NewUser()
 		if e != nil {
-			fmt.Println(e)
+			logger.ErrorLogger.Printf("user instance creation issue with error: [%s]", e.Error())
 			continue
 		}
 		if e := user.Bind(record); e != nil {
-			fmt.Println(e)
+			logger.ErrorLogger.Printf("bind failed with error: [%s]", e.Error())
 			continue
 		}
 		toInsertUsers = append(toInsertUsers, user)
 	}
 	_, err := toInsertUsers.StoreBulk(ctx)
 	if err != nil {
-		fmt.Println(err)
+		logger.ErrorLogger.Println(err)
+		logger.ErrorLogger.Printf("bulk insert failed: [%s]", err.Error())
 	}
 	wg.Done()
 }

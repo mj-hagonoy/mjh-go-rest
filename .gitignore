@@ -1,3 +1,4 @@
 vendor
 uploads
 config-dev.yaml
+logs/*.log

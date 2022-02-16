@@ -11,6 +11,7 @@ import (
 	"github.com/mj-hagonoy/mjh-go-rest/handlers"
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/config"
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/job"
+	"github.com/mj-hagonoy/mjh-go-rest/pkg/logger"
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/mail"
 )
 
@@ -20,6 +21,7 @@ func main() {
 	if err := config.ParseConfig(*configFile); err != nil {
 		panic(err)
 	}
+	logger.InitLoggers()
 	runJobWorker()
 	runMailWorker()
 	runRestService()
@@ -51,7 +53,7 @@ func runJobWorker() {
 			req := <-job.JobRequests
 			err := job.ProcessJob(context.Background(), req)
 			if err != nil {
-				fmt.Printf("error processing job %s, %s\n", req.ID, err.Error())
+				logger.ErrorLogger.Printf("error processing job [%s] with error:[%s]\n", req.ID, err.Error())
 			}
 			mail.MailRequests <- mail.Mail{
 				Subject:   fmt.Sprintf("[JOB_NOTICE] ID: %s", req.ID),
@@ -69,7 +71,7 @@ func runMailWorker() {
 		for {
 			req := <-mail.MailRequests
 			if err := mail.ProcessEmail(&req); err != nil {
-				fmt.Printf("error sending email with data = [%+v], error =%s\n", req, err.Error())
+				logger.ErrorLogger.Printf("error sending email with error: [%s]\n", err.Error())
 			}
 		}
 	}()

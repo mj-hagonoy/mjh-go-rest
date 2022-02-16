@@ -23,6 +23,9 @@ type Config struct {
 		SmtpPort string `yaml:"smtp_port"`
 		SmtpPwd  string `yaml:"smtp_pwd"`
 	} `yaml:"mail"`
+	Log struct {
+		LogDir string `yaml:"log_dir"`
+	} `yaml:"log"`
 }
 
 var conf Config
