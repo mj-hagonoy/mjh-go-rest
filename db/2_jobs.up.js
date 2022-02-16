@@ -1,4 +1,5 @@
 //use codev;
+db = db.getSiblingDB('codev')
 db.createCollection( "jobs", {
     validator: { $jsonSchema: {
         bsonType: "object",
@@ -14,6 +15,5 @@ db.createCollection( "jobs", {
     }}
 })
 
-//db.users.createIndex({"_id": 1})
-db.users.createIndex({"type": 1}, {unique:true, sparse:true})
-db.users.createIndex({"type": 1, "initiated_by": 1}, {unique:true, sparse:true})
+db.jobs.createIndex({"type": 1}, {unique:true, sparse:true})
+db.jobs.createIndex({"type": 1, "initiated_by": 1}, {unique:true, sparse:true})

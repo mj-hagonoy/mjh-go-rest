@@ -1,4 +1,5 @@
-//use codev;
+//use codev;'
+db = db.getSiblingDB('codev')
 db.createCollection( "users", {
     validator: { $jsonSchema: {
         bsonType: "object",
