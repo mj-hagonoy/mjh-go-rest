@@ -1,3 +1,4 @@
+host: ""
 port: 8080
 database: 
   host: "0.0.0.0"
@@ -14,3 +15,5 @@ mail:
   smtp_host: "smtp.gmail.com"
   smtp_port: "587"
   smtp_pwd: ""
+log:
+  log_dir: "<log directory>"
