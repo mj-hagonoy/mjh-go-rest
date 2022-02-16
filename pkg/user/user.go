@@ -18,7 +18,7 @@ type User struct {
 	FirstName string `bson:"first_name" json:"first_name" validate:"required"`
 	LastName  string `bson:"last_name" json:"last_name" validate:"required"`
 	Email     string `bson:"email" json:"email"`
-	Password  string `bson:"password" json:"password"`
+	Password  string `bson:"password" json:"-"`
 	Activated bool   `bson:"activated" json:"activated"`
 	Created   string `bson:"created" json:"created"`
 	Modified  string `bson:"modified" json:"modified"`
