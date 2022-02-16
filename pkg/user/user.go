@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"sync"
+	"time"
 
 	"github.com/go-playground/validator"
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/logger"
@@ -19,6 +20,8 @@ type User struct {
 	Email     string `bson:"email" json:"email"`
 	Password  string `bson:"password" json:"password"`
 	Activated bool   `bson:"activated" json:"activated"`
+	Created   string `bson:"created" json:"created"`
+	Modified  string `bson:"modified" json:"modified"`
 }
 type Users []*User
 
@@ -84,6 +87,7 @@ func bulkUpload(ctx context.Context, wg *sync.WaitGroup, records [][]string) {
 		return
 	}
 	var toInsertUsers Users = make(Users, 0)
+	now := time.Now().UTC().String()
 
 	for _, record := range records {
 		user, e := NewUser()
@@ -95,6 +99,7 @@ func bulkUpload(ctx context.Context, wg *sync.WaitGroup, records [][]string) {
 			logger.ErrorLogger.Printf("bind failed with error: [%s]", e.Error())
 			continue
 		}
+		user.Modified = now
 		toInsertUsers = append(toInsertUsers, user)
 	}
 	_, err := toInsertUsers.StoreBulk(ctx)

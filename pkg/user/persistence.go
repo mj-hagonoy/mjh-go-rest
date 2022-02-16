@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"time"
 
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/config"
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/db"
@@ -14,6 +15,8 @@ func (user *User) Store(c context.Context) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	user.Created = time.Now().UTC().String()
+	user.Modified = user.Created
 	coll := dbc.Database(config.GetConfig().Database.DbName).Collection(db.COL_USERS)
 	result, err := coll.InsertOne(c, user)
 	if err != nil {
