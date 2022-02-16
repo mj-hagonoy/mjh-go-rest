@@ -3,6 +3,7 @@ package job
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/config"
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/db"
@@ -15,6 +16,8 @@ func (job *Job) Store(c context.Context) error {
 	if err != nil {
 		return err
 	}
+	job.Created = time.Now().UTC().String()
+	job.Modified = job.Created
 	coll := dbc.Database(config.GetConfig().Database.DbName).Collection(db.COL_JOBS)
 	result, err := coll.InsertOne(c, job)
 	if err != nil {
@@ -51,7 +54,8 @@ func (job *Job) Update(c context.Context) error {
 	filter := bson.M{"_id": job.GetObjectID()}
 	update := bson.M{
 		"$set": bson.M{
-			"status": job.Status,
+			"status":   job.Status,
+			"modified": time.Now().UTC().String(),
 		},
 	}
 
