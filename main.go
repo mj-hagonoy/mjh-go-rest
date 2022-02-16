@@ -28,6 +28,7 @@ func main() {
 }
 
 func runRestService() {
+	logger.InfoLogger.Println("HTTP service is adding handlers.")
 	router := mux.NewRouter()
 	router.HandleFunc("/", handlers.HomeHandler)
 
@@ -42,12 +43,15 @@ func runRestService() {
 
 	http.Handle("/", router)
 
+	logger.InfoLogger.Printf("HTTP service will listen to %s at port %d", config.GetConfig().Host, config.GetConfig().Port)
+	logger.InfoLogger.Println("HTTP service running...")
 	if err := http.ListenAndServe(fmt.Sprintf(":%d", config.GetConfig().Port), nil); err != nil {
 		log.Fatal(err)
 	}
 }
 
 func runJobWorker() {
+	logger.InfoLogger.Println("Job batch worker started.")
 	go func() {
 		for {
 			req := <-job.JobRequests
@@ -67,6 +71,7 @@ func runJobWorker() {
 }
 
 func runMailWorker() {
+	logger.InfoLogger.Println("Mail worker started.")
 	go func() {
 		for {
 			req := <-mail.MailRequests
