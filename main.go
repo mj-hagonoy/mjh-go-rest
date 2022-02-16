@@ -63,8 +63,11 @@ func runJobWorker() {
 				Subject:   fmt.Sprintf("[JOB_NOTICE] ID: %s", req.ID),
 				EmailTo:   []string{req.InitiatedBy},
 				EmailFrom: config.GetConfig().Mail.EmaiFrom,
-				Data:      map[string]string{"job_id": req.ID},
-				Type:      mail.MAIL_TYPE_JOB_NOTIF,
+				Data: map[string]string{
+					"job_id": req.ID,
+					"url":    fmt.Sprintf("%s/jobs/%s", config.GetConfig().ApiUrl(), req.ID),
+				},
+				Type: mail.MAIL_TYPE_JOB_NOTIF,
 			}
 		}
 	}()

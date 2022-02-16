@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"io/ioutil"
 
 	yaml "gopkg.in/yaml.v2"
@@ -27,6 +28,10 @@ type Config struct {
 	Log struct {
 		LogDir string `yaml:"log_dir"`
 	} `yaml:"log"`
+}
+
+func (c Config) ApiUrl() string {
+	return fmt.Sprintf("http://%s:%d/api/v1", c.Host, c.Port)
 }
 
 var conf Config
