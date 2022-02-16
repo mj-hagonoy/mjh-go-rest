@@ -9,6 +9,8 @@ db.createCollection( "users", {
             email: {bsonType: "string"},
             password: {bsonType: "string"},
             activated: {bsonType: "bool"},
+            created: {bsonType: "string"},
+            modified: {bsonType: "string"},
         }
     }}
 })
