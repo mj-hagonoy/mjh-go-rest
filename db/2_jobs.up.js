@@ -14,6 +14,3 @@ db.createCollection( "jobs", {
         }
     }}
 })
-
-db.jobs.createIndex({"type": 1}, {unique:true, sparse:true})
-db.jobs.createIndex({"type": 1, "initiated_by": 1}, {unique:true, sparse:true})
