@@ -99,6 +99,7 @@ func bulkUpload(ctx context.Context, wg *sync.WaitGroup, records [][]string) {
 			logger.ErrorLogger.Printf("bind failed with error: [%s]", e.Error())
 			continue
 		}
+		user.Created = now
 		user.Modified = now
 		toInsertUsers = append(toInsertUsers, user)
 	}
