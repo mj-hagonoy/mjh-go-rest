@@ -11,6 +11,7 @@ func CsvReadAll(filepath string, ignoreHeader bool) ([][]string, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer file.Close()
 
 	reader := csv.NewReader(file)
 	data, err := reader.ReadAll()
