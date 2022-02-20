@@ -32,7 +32,6 @@ func NewGoogleCloudClient(projectID, bucketName, uploadPath string) (*GoogleClou
 }
 
 func (gcp GoogleCloudStorage) Write(ctx context.Context, filename string, data []byte) error {
-	defer gcp.cl.Close()
 	ctx, cancel := context.WithTimeout(ctx, time.Second*50)
 	defer cancel()
 
@@ -50,6 +49,15 @@ func (gcp GoogleCloudStorage) Write(ctx context.Context, filename string, data [
 	return nil
 }
 
-func (gcp GoogleCloudStorage) Read(ctx context.Context, src string, dst []byte) error {
-	return nil
+func (gcp GoogleCloudStorage) Read(ctx context.Context, src string) ([]byte, error) {
+	rc, err := gcp.cl.Bucket(gcp.bucketName).Object(gcp.uploadPath + src).NewReader(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("Read: %v", err)
+	}
+	defer rc.Close()
+	slurp, err := io.ReadAll(rc)
+	if err != nil {
+		return nil, fmt.Errorf("io.ReadAll: %v", err)
+	}
+	return slurp, nil
 }
