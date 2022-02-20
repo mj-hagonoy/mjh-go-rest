@@ -40,6 +40,12 @@ type Config struct {
 			UploadPath string `yaml:"upload_path"`
 		} `yaml:"google_cloud"`
 	} `yaml:"file_storage"`
+	Messaging struct {
+		GoogleCloud struct {
+			ProjectID string `yaml:"project_id"`
+			TopicID   string `yaml:"topic_id"`
+		} `yaml:"google_cloud"`
+	} `yaml:"messaging"`
 }
 
 func (c Config) ApiUrl() string {

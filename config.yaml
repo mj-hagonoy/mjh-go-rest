@@ -26,3 +26,7 @@ file_storage:
     upload_path: "<upload path = [empty or subfolder]>"
 credentials:
   google_app_creds : "<file path to GOOGLE_APPLICATION_CREDENTIALS>"
+messaging:
+  google_cloud: 
+    project_id: "<gcp project ID>"
+    topic_id: "<gcp bucket name>"

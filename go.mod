@@ -3,6 +3,7 @@ module github.com/mj-hagonoy/mjh-go-rest
 go 1.17
 
 require (
+	cloud.google.com/go/pubsub v1.3.1
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/gorilla/mux v1.8.0
 	go.mongodb.org/mongo-driver v1.8.3
@@ -13,6 +14,7 @@ require (
 	cloud.google.com/go v0.100.2 // indirect
 	cloud.google.com/go/compute v1.2.0 // indirect
 	cloud.google.com/go/iam v0.1.1 // indirect
+	cloud.google.com/go/kms v1.3.0 // indirect
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
@@ -44,7 +46,6 @@ require (
 	cloud.google.com/go/storage v1.21.0
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
-	github.com/jmoiron/sqlx v1.3.4 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 )

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -11,25 +10,33 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/mj-hagonoy/mjh-go-rest/handlers"
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/config"
-	"github.com/mj-hagonoy/mjh-go-rest/pkg/job"
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/logger"
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/mail"
 )
 
+var servType string
+
 func main() {
-	runJobWorker()
 	runMailWorker()
-	runRestService()
+	switch servType {
+	case "job":
+		runJobWorker()
+	case "web":
+		runRestService()
+	default:
+		panic(fmt.Sprintf("main: unsupported type %v", servType))
+	}
 }
 
 func init() {
 	configFile := flag.String("config", "config.yaml", "configuration file")
+	serviceType := flag.String("type", "web", "type = [web, job]")
 	flag.Parse()
 	if err := config.ParseConfig(*configFile); err != nil {
 		panic(err)
 	}
+	servType = *serviceType
 	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", config.GetConfig().Credentials.GoogleCloud)
-
 	logger.InitLoggers()
 }
 
@@ -54,29 +61,6 @@ func runRestService() {
 	if err := http.ListenAndServe(fmt.Sprintf(":%d", config.GetConfig().Port), nil); err != nil {
 		log.Fatal(err)
 	}
-}
-
-func runJobWorker() {
-	logger.InfoLogger.Println("Job batch worker started.")
-	go func() {
-		for {
-			req := <-job.JobRequests
-			err := job.ProcessJob(context.Background(), req)
-			if err != nil {
-				logger.ErrorLogger.Printf("error processing job [%s] with error:[%s]\n", req.ID, err.Error())
-			}
-			mail.MailRequests <- mail.Mail{
-				Subject:   fmt.Sprintf("[JOB_NOTICE] ID: %s", req.ID),
-				EmailTo:   []string{req.InitiatedBy},
-				EmailFrom: config.GetConfig().Mail.EmaiFrom,
-				Data: map[string]string{
-					"job_id": req.ID,
-					"url":    fmt.Sprintf("%s/jobs/%s", config.GetConfig().ApiUrl(), req.ID),
-				},
-				Type: mail.MAIL_TYPE_JOB_NOTIF,
-			}
-		}
-	}()
 }
 
 func runMailWorker() {

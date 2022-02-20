@@ -5,9 +5,12 @@
 - [x] CRUD + DB connection (mongodb)
 - [x] HTTP routing (mux)
 - [x] logging
-- [x] Google Cloud Storage (read, write) 
 - [x] goroutines 
 - [x] channels
+
+### Google Cloud services used
+- [x] Google Cloud Storage
+- [x] Google Cloud PubSub
 
 ## How to use
 ### Clone repository
@@ -21,33 +24,53 @@ cd mjh-go-rest
 ### Update config file
 Refer to [config.yaml](config.yaml)
 ```
-host: ""
+host: "localhost"
 port: 8080
 database: 
   host: "0.0.0.0"
   port: 27017
   username: ""
   password: ""
-  dbname: "<db_name>"
+  dbname: "mjh"
   sslmode: "disable"
 directory:
   import_users: "<upload directory for csv files - import users>"
   mail_templates: <email templates directory>"
 mail:
   from: "...@gmail.com"
-  smtp_host: ""
-  smtp_port: ""
-  smtp_user : ""
-  smtp_pwd: ""
+  smtp_host: "smtp.mailtrap.io"
+  smtp_port: "2525"
+  smtp_user : "<user>"
+  smtp_pwd: "<pwd>"
 log:
   log_dir: "<log directory>"
+file_storage:
+  default: "google_cloud"
+  google_cloud:
+    project_id: "<gcp project ID>"
+    bucket_name: "<gcp bucket name>"
+    upload_path: "<upload path = [empty or subfolder]>"
+credentials:
+  google_app_creds : "<file path to GOOGLE_APPLICATION_CREDENTIALS>"
+messaging:
+  google_cloud: 
+    project_id: "<gcp project ID>"
+    topic_id: "<gcp bucket name>"
 ```
 
-
-### Build, run locally
+### Build
 ```
-make build
-make local
+go build ./main.go ./jobworker.go
+```
+
+### Run web service
+```
+./main --config config.yaml --type web
+```
+
+### Run job service
+```
+./main --config config.yaml --type job
 ```
 
 ## APIs
