@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/mj-hagonoy/mjh-go-rest/handlers"
@@ -22,9 +23,14 @@ func main() {
 		panic(err)
 	}
 	logger.InitLoggers()
+	setEnv()
 	runJobWorker()
 	runMailWorker()
 	runRestService()
+}
+
+func setEnv() {
+	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", config.GetConfig().Credentials.GoogleCloud)
 }
 
 func runRestService() {

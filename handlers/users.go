@@ -1,13 +1,9 @@
 package handlers
 
 import (
-	"fmt"
-	"io/fs"
-	"io/ioutil"
 	"net/http"
-	"path"
 
-	"github.com/mj-hagonoy/mjh-go-rest/pkg/config"
+	"github.com/mj-hagonoy/mjh-go-rest/pkg/file_storage"
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/job"
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/rest"
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/user"
@@ -49,10 +45,17 @@ func ImportUsersHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	filepath := path.Clean(fmt.Sprintf("%s/%s", config.GetConfig().Directory.UploadUsers, header.Filename))
-	ioutil.WriteFile(filepath, fileData, fs.ModePerm)
+	storage, err := file_storage.GetStorage()
+	if err != nil {
+		rest.Respond(w, rest.Response{Status: http.StatusInternalServerError, Err: err})
+		return
+	}
+	if err := storage.Write(r.Context(), header.Filename, fileData); err != nil {
+		rest.Respond(w, rest.Response{Status: http.StatusBadRequest, Err: err})
+		return
+	}
 
-	importJob, err := job.CreateNewJob(r.Context(), job.JOB_TYPE_IMPORT_USERS, filepath)
+	importJob, err := job.CreateNewJob(r.Context(), job.JOB_TYPE_IMPORT_USERS, header.Filename)
 	if err != nil {
 		rest.Respond(w, rest.Response{Status: http.StatusInternalServerError, Err: err})
 		return

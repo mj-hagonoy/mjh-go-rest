@@ -1,11 +1,11 @@
-host: ""
+host: "localhost"
 port: 8080
 database: 
   host: "0.0.0.0"
   port: 27017
   username: ""
   password: ""
-  dbname: "codev"
+  dbname: "mjh"
   sslmode: "disable"
 directory:
   import_users: "<upload directory for csv files - import users>"
@@ -14,7 +14,15 @@ mail:
   from: "...@gmail.com"
   smtp_host: "smtp.mailtrap.io"
   smtp_port: "2525"
-  smtp_user : "282889e9032f1d"
-  smtp_pwd: "4266ee3ef4db6d"
+  smtp_user : "<user>"
+  smtp_pwd: "<pwd>"
 log:
   log_dir: "<log directory>"
+file_storage:
+  default: "google_cloud"
+  google_cloud:
+    project_id: "<gcp project ID>"
+    bucket_name: "<gcp bucket name>"
+    upload_path: "<upload path = [empty or subfolder]>"
+credentials:
+  google_app_creds : "<file path to GOOGLE_APPLICATION_CREDENTIALS>"
