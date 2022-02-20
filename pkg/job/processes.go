@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/mj-hagonoy/mjh-go-rest/pkg/file_storage"
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/user"
 )
 
@@ -17,7 +18,15 @@ func ProcessJob(ctx context.Context, job Job) error {
 }
 
 func importUsersFromCsv(ctx context.Context, job Job) error {
-	if err := user.ImportUsersFromCsv(ctx, job.SourceFile); err != nil {
+	storage, err := file_storage.GetStorage()
+	if err != nil {
+		return err
+	}
+	byteData, err := storage.Read(ctx, job.SourceFile)
+	if err != nil {
+		return err
+	}
+	if err := user.ImportUsersFromCsvBytes(ctx, byteData); err != nil {
 		return err
 	}
 

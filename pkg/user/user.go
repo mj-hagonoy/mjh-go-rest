@@ -1,6 +1,7 @@
 package user
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"sync"
@@ -60,6 +61,16 @@ func ImportUsersFromCsv(ctx context.Context, filepath string) error {
 	if err != nil {
 		return err
 	}
+	return BulkUpload(ctx, records)
+}
+
+func ImportUsersFromCsvBytes(ctx context.Context, data []byte) error {
+	buf := bytes.NewReader(data)
+	records, err := utils.CsvRead(buf, true)
+	if err != nil {
+		return fmt.Errorf("ImportUsersFromCsvBytes: %v", err)
+	}
+
 	return BulkUpload(ctx, records)
 }
 
