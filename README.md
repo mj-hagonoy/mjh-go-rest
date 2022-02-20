@@ -5,7 +5,7 @@
 - [x] CRUD + DB connection (mongodb)
 - [x] HTTP routing (mux)
 - [x] logging
-- [x] CSV file upload 
+- [x] Google Cloud Storage (read, write) 
 - [x] goroutines 
 - [x] channels
 
@@ -19,7 +19,7 @@ cd mjh-go-rest
 
 
 ### Update config file
-Refer to config.yaml
+Refer to [config.yaml](config.yaml)
 ```
 host: ""
 port: 8080
