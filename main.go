@@ -17,20 +17,20 @@ import (
 )
 
 func main() {
-	configFile := flag.String("config", "config.yaml", "configuration file")
-	flag.Parse()
-	if err := config.ParseConfig(*configFile); err != nil {
-		panic(err)
-	}
-	logger.InitLoggers()
-	setEnv()
 	runJobWorker()
 	runMailWorker()
 	runRestService()
 }
 
-func setEnv() {
+func init() {
+	configFile := flag.String("config", "config.yaml", "configuration file")
+	flag.Parse()
+	if err := config.ParseConfig(*configFile); err != nil {
+		panic(err)
+	}
 	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", config.GetConfig().Credentials.GoogleCloud)
+
+	logger.InitLoggers()
 }
 
 func runRestService() {
