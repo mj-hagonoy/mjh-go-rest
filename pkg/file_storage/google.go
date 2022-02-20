@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"cloud.google.com/go/storage"
-	"github.com/mj-hagonoy/mjh-go-rest/pkg/logger"
 )
 
 type GoogleCloudStorage struct {
@@ -45,7 +44,6 @@ func (gcp GoogleCloudStorage) Write(ctx context.Context, filename string, data [
 	if err := wc.Close(); err != nil {
 		return fmt.Errorf("Writer.Close: %v", err)
 	}
-	logger.InfoLogger.Printf("%v uploaded to %v \n", filename, data)
 	return nil
 }
 
