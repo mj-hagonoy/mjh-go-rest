@@ -8,8 +8,11 @@ import (
 )
 
 type Config struct {
-	Host     string `yaml:"host"`
-	Port     int    `yaml:"port"`
+	Host        string `yaml:"host"`
+	Port        int    `yaml:"port"`
+	Credentials struct {
+		GoogleCloud string `yaml:"google_app_creds"`
+	} `yaml:"credentials"`
 	Database struct {
 		Host   string `yaml:"host"`
 		Port   int    `yaml:"port"`
@@ -29,6 +32,14 @@ type Config struct {
 	Log struct {
 		LogDir string `yaml:"log_dir"`
 	} `yaml:"log"`
+	FileStorage struct {
+		Default     string `yaml:"default"`
+		GoogleCloud struct {
+			ProjectID  string `yaml:"project_id"`
+			BucketName string `yaml:"bucket_name"`
+			UploadPath string `yaml:"upload_path"`
+		} `yaml:"google_cloud"`
+	} `yaml:"file_storage"`
 }
 
 func (c Config) ApiUrl() string {
