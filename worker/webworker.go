@@ -1,4 +1,4 @@
-package main
+package worker
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ import (
 
 type WebWorker struct{}
 
-func (w *WebWorker) Run() {
+func (w WebWorker) Run() {
 	logger.InfoLogger.Println("HTTP service is adding handlers.")
 	router := mux.NewRouter()
 	router.HandleFunc("/", handlers.HomeHandler)

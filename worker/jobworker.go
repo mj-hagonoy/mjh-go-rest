@@ -1,9 +1,8 @@
-package main
+package worker
 
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"sync"
 
 	"cloud.google.com/go/pubsub"
@@ -21,7 +20,8 @@ type JobWorker struct {
 	ProjectID string
 }
 
-func (w *JobWorker) Run() {
+func (w JobWorker) Run() {
+	logger.InfoLogger.Println("JobWorker.Run: starting worker")
 	if err := w.Connect(w.ProjectID); err != nil {
 		panic(err)
 	}
@@ -60,7 +60,7 @@ func (w *JobWorker) Run() {
 		cm <- job
 	})
 	if err != nil {
-		fmt.Printf("sub.Receive: %v\n", err)
+		logger.InfoLogger.Printf("sub.Receive: %v\n", err)
 	}
 }
 

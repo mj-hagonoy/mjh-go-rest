@@ -1,9 +1,8 @@
-package main
+package worker
 
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"sync"
 
 	"cloud.google.com/go/pubsub"
@@ -21,7 +20,8 @@ type MailWorker struct {
 	ProjectID string
 }
 
-func (w *MailWorker) Run() {
+func (w MailWorker) Run() {
+	logger.InfoLogger.Println("MailWorker.Run: starting worker")
 	if err := w.Connect(w.ProjectID); err != nil {
 		panic(err)
 	}
@@ -56,7 +56,7 @@ func (w *MailWorker) Run() {
 		cm <- mail
 	})
 	if err != nil {
-		fmt.Printf("sub.Receive: %v\n", err)
+		logger.InfoLogger.Printf("sub.Receive: %v\n", err)
 	}
 }
 

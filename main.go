@@ -2,29 +2,21 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"os"
 
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/config"
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/logger"
+	"github.com/mj-hagonoy/mjh-go-rest/worker"
 )
 
-var servType string
+var servType worker.WorkerType
 
 func main() {
-	switch servType {
-	case WORKER_JOB:
-		worker := JobWorker{ProjectID: config.GetConfig().Messaging.GoogleCloud.ProjectID}
-		worker.Run()
-	case "web":
-		worker := WebWorker{}
-		worker.Run()
-	case WORKER_EMAIL:
-		worker := MailWorker{ProjectID: config.GetConfig().Messaging.GoogleCloud.ProjectID}
-		worker.Run()
-	default:
-		panic(fmt.Sprintf("main: unsupported type %v", servType))
+	worker, err := worker.GetWorker(servType)
+	if err != nil {
+		panic(err)
 	}
+	worker.Run()
 }
 
 func init() {
@@ -34,7 +26,7 @@ func init() {
 	if err := config.ParseConfig(*configFile); err != nil {
 		panic(err)
 	}
-	servType = *serviceType
+	servType = worker.WorkerType(*serviceType)
 	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", config.GetConfig().Credentials.GoogleCloud)
 	logger.InitLoggers()
 }
