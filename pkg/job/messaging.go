@@ -10,13 +10,18 @@ import (
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/mail"
 )
 
+const (
+	WORKER_JOB   = "job"
+	WORKER_EMAIL = "email"
+)
+
 func (job Job) AddToJobQueue() (string, error) {
 	cl, err := messaging.GetMessagingClient(config.GetConfig().Messaging.GoogleCloud.ProjectID)
 	if err != nil {
 		return "", fmt.Errorf("messaging.GetMessagingClient: %v", err)
 	}
 	b, _ := json.Marshal(job)
-	return cl.Publish(context.Background(), messaging.Message{Type: "job", Data: b}, config.GetConfig().Messaging.GoogleCloud.TopicID, "")
+	return cl.Publish(context.Background(), messaging.Message{Type: WORKER_JOB, Data: b}, config.GetConfig().Messaging.GoogleCloud.TopicID, "")
 }
 
 func (job Job) Notify() (string, error) {
@@ -36,5 +41,5 @@ func (job Job) Notify() (string, error) {
 	}
 
 	b, _ := json.Marshal(msg)
-	return cl.Publish(context.Background(), messaging.Message{Type: "email", Data: b}, config.GetConfig().Messaging.GoogleCloud.TopicID, "")
+	return cl.Publish(context.Background(), messaging.Message{Type: WORKER_EMAIL, Data: b}, config.GetConfig().Messaging.GoogleCloud.TopicID, "")
 }

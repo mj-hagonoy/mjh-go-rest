@@ -11,19 +11,20 @@ import (
 	"github.com/mj-hagonoy/mjh-go-rest/handlers"
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/config"
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/logger"
-	"github.com/mj-hagonoy/mjh-go-rest/pkg/mail"
 )
 
 var servType string
 
 func main() {
-	runMailWorker()
 	switch servType {
-	case "job":
+	case WORKER_JOB:
 		worker := JobWorker{ProjectID: config.GetConfig().Messaging.GoogleCloud.ProjectID}
 		worker.Run()
 	case "web":
 		runRestService()
+	case WORKER_EMAIL:
+		worker := MailWorker{ProjectID: config.GetConfig().Messaging.GoogleCloud.ProjectID}
+		worker.Run()
 	default:
 		panic(fmt.Sprintf("main: unsupported type %v", servType))
 	}
@@ -62,16 +63,4 @@ func runRestService() {
 	if err := http.ListenAndServe(fmt.Sprintf(":%d", config.GetConfig().Port), nil); err != nil {
 		log.Fatal(err)
 	}
-}
-
-func runMailWorker() {
-	logger.InfoLogger.Println("Mail worker started.")
-	go func() {
-		for {
-			req := <-mail.MailRequests
-			if err := mail.ProcessEmail(&req); err != nil {
-				logger.ErrorLogger.Printf("error sending email with error: [%s]\n", err.Error())
-			}
-		}
-	}()
 }

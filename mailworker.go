@@ -9,34 +9,30 @@ import (
 	"cloud.google.com/go/pubsub"
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/common/messaging"
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/config"
-	"github.com/mj-hagonoy/mjh-go-rest/pkg/job"
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/logger"
+	"github.com/mj-hagonoy/mjh-go-rest/pkg/mail"
 )
 
-const WORKER_JOB = "job"
+const WORKER_EMAIL = "email"
 
-type JobWorker struct {
+type MailWorker struct {
 	cl        *pubsub.Client
 	once      sync.Once
 	ProjectID string
 }
 
-func (w *JobWorker) Run() {
+func (w *MailWorker) Run() {
 	if err := w.Connect(w.ProjectID); err != nil {
 		panic(err)
 	}
 	defer w.cl.Close()
 	sub := w.cl.Subscription(config.GetConfig().Messaging.GoogleCloud.ProjectID)
-	cm := make(chan job.Job)
+	cm := make(chan mail.Mail)
 	go func() {
 		for {
-			job := <-cm
-			if err := job.ProcessJob(context.Background()); err != nil {
-				logger.ErrorLogger.Printf("job.ProcessJob: %v\n", err)
-			}
-
-			if _, err := job.Notify(); err != nil {
-				logger.ErrorLogger.Printf("job.Notif: %v\n", err)
+			mail := <-cm
+			if err := mail.ProcessEmail(); err != nil {
+				logger.ErrorLogger.Printf("error sending email with error: [%s]\n", err.Error())
 			}
 		}
 	}()
@@ -48,23 +44,23 @@ func (w *JobWorker) Run() {
 			logger.ErrorLogger.Printf("json.Unmarshal: %v\n", err)
 			return
 		}
-		if req.Type != WORKER_JOB {
+		if req.Type != WORKER_EMAIL {
 			return
 		}
 		m.Ack()
-		var job job.Job
-		if err := json.Unmarshal(req.Data, &job); err != nil {
+		var mail mail.Mail
+		if err := json.Unmarshal(req.Data, &mail); err != nil {
 			logger.ErrorLogger.Printf("json.Unmarshal: %v\n", err)
 			return
 		}
-		cm <- job
+		cm <- mail
 	})
 	if err != nil {
 		fmt.Printf("sub.Receive: %v\n", err)
 	}
 }
 
-func (w *JobWorker) Connect(projectID string) error {
+func (w *MailWorker) Connect(projectID string) error {
 	var connErr error
 	w.once.Do(func() {
 		client, err := pubsub.NewClient(context.Background(), projectID)
