@@ -67,7 +67,7 @@ func (m *Mail) BuildMessage() error {
 	return nil
 }
 
-func ProcessEmail(m *Mail) error {
+func (m *Mail) ProcessEmail() error {
 	if err := m.BuildMessage(); err != nil {
 		return err
 	}

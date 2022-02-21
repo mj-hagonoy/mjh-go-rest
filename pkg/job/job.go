@@ -70,6 +70,6 @@ func CreateNewJob(c context.Context, jobType string, sourceFile string) (*Job, e
 	if err != nil {
 		return nil, err
 	}
-	go AddToQueue(*batch)
+	go batch.AddToJobQueue()
 	return batch, err
 }

@@ -2,14 +2,20 @@ package messaging
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"sync"
 
 	"cloud.google.com/go/pubsub"
 )
 
+type Message struct {
+	Type string `json:"type"`
+	Data []byte `json:"data"`
+}
+
 type IMessagingClient interface {
-	Publish(ctx context.Context, msg []byte, exchangeName string, exchangeType string) (string, error)
+	Publish(ctx context.Context, msg Message, exchangeName string, exchangeType string) (string, error)
 	Close()
 }
 
@@ -41,11 +47,16 @@ func (cl GcpMessagingClient) Close() {
 	cl.cl.Close()
 }
 
-func (cl GcpMessagingClient) Publish(ctx context.Context, msg []byte, exchangeName string, exchangeType string) (string, error) {
+func (cl GcpMessagingClient) Publish(ctx context.Context, msg Message, exchangeName string, exchangeType string) (string, error) {
+	data, err := json.Marshal(msg)
+	if err != nil {
+		return "", fmt.Errorf("json.Marshal: %v", err)
+	}
+
 	topic := cl.cl.Topic(exchangeName)
 	defer topic.Stop()
 	res := topic.Publish(ctx, &pubsub.Message{
-		Data: msg,
+		Data: data,
 	})
 	msgID, err := res.Get(ctx)
 	if err != nil {
