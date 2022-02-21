@@ -20,7 +20,8 @@ func main() {
 	runMailWorker()
 	switch servType {
 	case "job":
-		runJobWorker()
+		worker := JobWorker{ProjectID: config.GetConfig().Messaging.GoogleCloud.ProjectID}
+		worker.Run()
 	case "web":
 		runRestService()
 	default:

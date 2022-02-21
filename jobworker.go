@@ -13,16 +13,18 @@ import (
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/logger"
 )
 
-var pubsubClient *pubsub.Client
-var once sync.Once
+type JobWorker struct {
+	cl        *pubsub.Client
+	once      sync.Once
+	ProjectID string
+}
 
-func runJobWorker() {
-	if err := connect(config.GetConfig().Messaging.GoogleCloud.ProjectID); err != nil {
+func (w *JobWorker) Run() {
+	if err := w.Connect(w.ProjectID); err != nil {
 		panic(err)
 	}
-	defer pubsubClient.Close()
-
-	sub := pubsubClient.Subscription(config.GetConfig().Messaging.GoogleCloud.ProjectID)
+	defer w.cl.Close()
+	sub := w.cl.Subscription(config.GetConfig().Messaging.GoogleCloud.ProjectID)
 	cm := make(chan job.Job)
 	go func() {
 		for {
@@ -58,15 +60,15 @@ func runJobWorker() {
 	}
 }
 
-func connect(projectID string) error {
+func (w *JobWorker) Connect(projectID string) error {
 	var connErr error
-	once.Do(func() {
+	w.once.Do(func() {
 		client, err := pubsub.NewClient(context.Background(), projectID)
 		if err != nil {
 			connErr = err
 			return
 		}
-		pubsubClient = client
+		w.cl = client
 	})
 	return connErr
 }
