@@ -60,7 +60,7 @@ messaging:
 
 ### Build
 ```
-go build ./main.go ./jobworker.go
+go build ./main.go
 ```
 
 ### Run web service
@@ -71,6 +71,11 @@ go build ./main.go ./jobworker.go
 ### Run job service
 ```
 ./main --config config.yaml --type job
+```
+
+### Run email service
+```
+./main --config config.yaml --type email
 ```
 
 ## APIs
