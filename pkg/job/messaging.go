@@ -10,7 +10,7 @@ import (
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/mail"
 )
 
-func AddToJobQueue(job Job) (string, error) {
+func (job Job) AddToJobQueue() (string, error) {
 	cl, err := messaging.GetMessagingClient(config.GetConfig().Messaging.GoogleCloud.ProjectID)
 	if err != nil {
 		return "", fmt.Errorf("messaging.GetMessagingClient: %v", err)
@@ -19,7 +19,7 @@ func AddToJobQueue(job Job) (string, error) {
 	return cl.Publish(context.Background(), messaging.Message{Type: "job", Data: b}, config.GetConfig().Messaging.GoogleCloud.TopicID, "")
 }
 
-func Notify(job Job) (string, error) {
+func (job Job) Notify() (string, error) {
 	cl, err := messaging.GetMessagingClient(config.GetConfig().Messaging.GoogleCloud.ProjectID)
 	if err != nil {
 		return "", fmt.Errorf("messaging.GetMessagingClient: %v", err)

@@ -11,7 +11,6 @@ import (
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/config"
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/job"
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/logger"
-	"github.com/mj-hagonoy/mjh-go-rest/pkg/mail"
 )
 
 var pubsubClient *pubsub.Client
@@ -27,20 +26,12 @@ func runJobWorker() {
 	cm := make(chan job.Job)
 	go func() {
 		for {
-			m := <-cm
-			if err := job.ProcessJob(context.Background(), m); err != nil {
+			job := <-cm
+			if err := job.ProcessJob(context.Background()); err != nil {
 				logger.ErrorLogger.Printf("job.ProcessJob: %v\n", err)
 			}
-			mail.MailRequests <- mail.Mail{
-				Subject:   fmt.Sprintf("[JOB_NOTICE] ID: %s", m.ID),
-				EmailTo:   []string{m.InitiatedBy},
-				EmailFrom: config.GetConfig().Mail.EmaiFrom,
-				Data: map[string]string{
-					"job_id": m.ID,
-					"url":    fmt.Sprintf("%s/jobs/%s", config.GetConfig().ApiUrl(), m.ID),
-				},
-				Type: mail.MAIL_TYPE_JOB_NOTIF,
-			}
+
+			job.Notify()
 		}
 	}()
 
@@ -52,7 +43,6 @@ func runJobWorker() {
 			return
 		}
 		if req.Type != "job" {
-			fmt.Printf("sub.Receive: req.Type %v != 'job'", req.Type)
 			return
 		}
 		m.Ack()

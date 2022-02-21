@@ -8,10 +8,10 @@ import (
 	"github.com/mj-hagonoy/mjh-go-rest/pkg/user"
 )
 
-func ProcessJob(ctx context.Context, job Job) error {
+func (job *Job) ProcessJob(ctx context.Context) error {
 	switch job.Type {
 	case JOB_TYPE_IMPORT_USERS:
-		return importUsersFromCsv(ctx, job)
+		return importUsersFromCsv(ctx, *job)
 	default:
 		return fmt.Errorf("unsupported job type %s", job.Type)
 	}
