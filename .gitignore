@@ -1,5 +1,6 @@
 vendor
 uploads
 config-dev.yaml
+Dockerfile-local
 logs/*.log
 data/db

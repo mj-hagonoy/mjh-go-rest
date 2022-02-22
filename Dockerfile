@@ -12,7 +12,8 @@ FROM alpine:latest
 ENV GO111MODULE=on
 ENV GOFLAGS=-mod=vendor
 WORKDIR /github.com/mj-hagonoy/mjh-go-rest
+COPY config.yaml ./
 COPY --from=builder /github.com/mj-hagonoy/mjh-go-rest/main .
 
 EXPOSE 8080
-CMD ["main"]
+CMD ["./main","--config", "./config.yaml", "--type", "web"]
